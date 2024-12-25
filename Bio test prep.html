@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecology Battleship Quiz</title>
+    <style>
+        body {
+            font-family: "Courier New", monospace;
+            background-color: #001f3f;
+            color: #7FDBFF;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #FF4136;
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #0074D9;
+            color: #FFF;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #001f3f;
+        }
+        .incorrect {
+            color: #FF4136;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ecology Battleship Quiz</h1>
+    <h2>Sink the Incorrect Answers!</h2>
+    <form id="quizForm">
+        <!-- Questions will be dynamically generated -->
+    </form>
+    <button type="button" onclick="calculateScore()">Fire Torpedo (Submit)</button>
+    <div class="result" id="result"></div>
+    <script>
+        // Complete 50 questions and answers based on your material
+        const questions = [
+            { question: "What is ecology?", options: ["Study of population dynamics", "Study of climate change", "Study of interactions between organisms and their environment", "Study of energy flow"], answer: "c" },
+            { question: "List the levels of organization in ecology from smallest to largest.", options: ["Species, biosphere, community, population", "Population, species, ecosystem, biome", "Species, population, community, ecosystem, biome, biosphere", "Biosphere, biome, ecosystem, community"], answer: "c" },
+            { question: "What is the difference between a population and a community?", options: ["A population includes multiple species, while a community does not.", "A population consists of individuals of the same species, while a community includes multiple populations interacting.", "A community is larger than a biome.", "There is no difference."], answer: "b" },
+            { question: "Name three characteristics of the tropical rainforest biome.", options: ["High biodiversity, dense canopies, two distinct seasons", "Low biodiversity, sparse vegetation, cold climate", "High biodiversity, open vegetation, arid conditions", "None of the above"], answer: "a" },
+            { question: "Describe the main feature of the tundra biome.", options: ["Cold temperatures, high biodiversity, dense forests", "Warm temperatures, low precipitation, grasslands", "Cold temperatures, low biodiversity, permafrost", "High temperatures, low biodiversity, deserts"], answer: "c" },
+            { question: "What is a biome?", options: ["A large ecosystem with distinct climates, flora, and fauna", "A small localized ecosystem", "A classification of species", "A geological structure"], answer: "a" },
+            { question: "Differentiate between terrestrial and aquatic biomes.", options: ["Terrestrial biomes are water-based; aquatic biomes are land-based.", "Terrestrial biomes occur on land; aquatic biomes occur in water.", "Both are the same.", "Aquatic biomes occur only in freshwater."], answer: "b" },
+            { question: "What is mutualism?", options: ["A relationship where both species benefit.", "A relationship where one benefits and one is harmed.", "A relationship where one benefits and the other is unaffected.", "None of the above."], answer: "a" },
+            { question: "Define population density.", options: ["The distribution of species in an area.", "The number of individuals per unit area.", "The total population size.", "The birth and death rates."], answer: "b" },
+            { question: "What does the pyramid of energy represent?", options: ["Total biomass in each trophic level.", "Energy transfer between trophic levels.", "Organism count at each level.", "Energy stored in producers."], answer: "b" },
+            { question: "What is primary succession?", options: ["Succession in pre-existing ecosystems.", "Succession in lifeless areas like volcanic rock.", "Succession in aquatic areas.", "None of the above."], answer: "b" },
+            { question: "What is secondary succession?", options: ["Growth in a volcanic area.", "Forest regrowth after a fire.", "Formation of a lake.", "None of the above."], answer: "b" },
+            { question: "Define autotrophs.", options: ["Organisms that consume others for energy.", "Producers that make their own food.", "Consumers in the food chain.", "None of the above."], answer: "b" },
+            { question: "What is nitrogen fixation?", options: ["Conversion of nitrogen gas into usable forms for plants.", "Recycling of nutrients by microorganisms.", "Conversion of oxygen into nitrogen.", "None of the above."], answer: "a" },
+            { question: "What is an estuary?", options: ["Where a river meets the ocean, supporting biodiversity.", "A dry biome.", "A freshwater biome.", "None of the above."], answer: "a" },
+            { question: "Why are decomposers important?", options: ["They consume other organisms.", "They recycle nutrients and break down dead matter.", "They photosynthesize.", "None of the above."], answer: "b" },
+            { question: "What is the carrying capacity?", options: ["Maximum resources available in an environment", "Maximum population size an environment can sustain", "Minimum population needed for growth", "Population growth rate"], answer: "b" },
+            { question: "What are herbivores?", options: ["Organisms that eat plants.", "Organisms that eat meat.", "Organisms that eat both plants and meat.", "None of the above."], answer: "a" },
+            { question: "Define commensalism.", options: ["A relationship where both species benefit.", "A relationship where one benefits, and the other is unaffected.", "A relationship where one benefits, and one is harmed.", "None of the above."], answer: "b" },
+            { question: "What is exponential growth?", options: ["Slow growth in resources.", "Rapid, resource-unlimited growth.", "Growth constrained by carrying capacity.", "None of the above."], answer: "b" },
+            { question: "What are omnivores?", options: ["Organisms that eat plants.", "Organisms that eat meat.", "Organisms that eat both plants and meat.", "None of the above."], answer: "c" },
+            { question: "What is the role of a scavenger?", options: ["To consume plants.", "To feed on dead organisms.", "To photosynthesize.", "None of the above."], answer: "b" },
+            { question: "What is the pyramid of numbers?", options: ["A representation of energy transfer.", "A display of organism counts at each trophic level.", "A display of biomass at each level.", "None of the above."], answer: "b" },
+            { question: "What are density-independent factors?", options: ["Factors that vary with population density.", "Factors that affect populations regardless of density.", "Biotic factors.", "None of the above."], answer: "b" },
+            { question: "What is the biosphere?", options: ["The smallest ecological level.", "The highest ecological level, encompassing all ecosystems.", "A terrestrial biome.", "None of the above."], answer: "b" },
+            { question: "Define trophic levels.", options: ["Levels of energy transfer in an ecosystem.", "Levels of population density.", "Different biomes.", "None of the above."], answer: "a" },
+            { question: "What is the aphotic zone?", options: ["An area in oceans with sufficient light for photosynthesis.", "A dark zone in oceans without light.", "A freshwater ecosystem.", "None of the above."], answer: "b" },
+            { question: "What are freshwater biomes?", options: ["Biomes with low salt content like lakes and rivers.", "Marine biomes.", "Desert biomes.", "None of the above."], answer: "a" },
+            { question: "What is the pyramid of biomass?", options: ["Shows the total dry mass of organisms at each trophic level.", "Shows the energy transferred between trophic levels.", "Shows the number of organisms in each ecosystem.", "None of the above."], answer: "a" },
+            { question: "What are limiting factors?", options: ["Conditions that restrict population growth.", "Factors that increase biodiversity.", "Factors unrelated to population density.", "None of the above."], answer: "a" },
+            { question: "What is symbiosis?", options: ["Interaction between species in which both benefit.", "Close interaction between two different species.", "Interaction between biotic and abiotic factors.", "None of the above."], answer: "b" },
+            { question: "What is the role of decomposers in the food web?", options: ["Produce energy.", "Recycle nutrients.", "Consume predators.", "None of the above."], answer: "b" },
+            { question: "What is the significance of biodiversity?", options: ["Maintains ecosystem stability.", "Promotes habitat destruction.", "Limits species interactions.", "None of the above."], answer: "a" },
+            { question: "What are detritivores?", options: ["Organisms that consume decomposing organic matter.", "Predators.", "Producers.", "None of the above."], answer: "a" },
+            { question: "What is the role of light intensity in ecosystems?", options: ["It supports photosynthesis.", "It affects reproduction rates.", "It is irrelevant.", "None of the above."], answer: "a" },
+            { question: "What is a niche?", options: ["A classification of species.", "An organism's role in its environment.", "A biome.", "None of the above."], answer: "b" },
+            { question: "What is a habitat?", options: ["The natural environment of an organism.", "A classification of species.", "A biome.", "None of the above."], answer: "a" }
+        ];
+
+        const form = document.getElementById("quizForm");
+
+        // Dynamically generate questions
+        questions.forEach((q, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.className = "question";
+            questionDiv.innerHTML = `
+                <p>${index + 1}. ${q.question}</p>
+                ${q.options.map((option, i) => `
+                    <label>
+                        <input type="radio" name="q${index}" value="${String.fromCharCode(97 + i)}">
+                        ${String.fromCharCode(97 + i)}) ${option}
+                    </label><br>
+                `).join('')}
+            `;
+            form.appendChild(questionDiv);
+        });
+
+        function calculateScore() {
+            let score = 0;
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
+
+            questions.forEach((q, index) => {
+                const userAnswer = document.querySelector(`input[name="q${index}"]:checked`);
+                if (userAnswer && userAnswer.value === q.answer) {
+                    score++;
+                }
+            });
+
+            resultDiv.innerHTML = `You scored ${score} out of ${questions.length}`;
+        }
+    </script>
+</body>
+</html>
